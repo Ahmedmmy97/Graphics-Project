@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>WebGL Project</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>    
+    <script id="vertex-shader" type="x-shader/x-vertex">
+
+        attribute vec4 vPosition;
+
+        void main()
+        {
+            gl_Position = vPosition;
+            
+            
+        }
+        </script>
+        <script id="fragment-shader" type="x-shader/x-fragment">
+
+            precision mediump float;
+            uniform lowp vec4 uColor;
+            
+            void main()
+            {
+                gl_FragColor = uColor;
+
+            }
+            </script>
+            <script type="text/javascript" src="Common/webgl-utils.js"></script>
+            <script type="text/javascript" src="Common/initShaders.js"></script>
+            <script type="text/javascript" src="Common/MV.js"></script>
+            <script type="text/javascript" src="Common/color.js"></script>
+            <script type="text/javascript" src="script.js"></script>
+          
+                     
+</head>
+
+<body>
+    <canvas id="gl-canvas" width="700" height="700">
+        Oops ... your browser doesn't support the HTML5 canvas element
+        </canvas>
+        <br/>
+   
+</body>
+</html>
