@@ -77,7 +77,10 @@ dragControls.addEventListener( 'dragend', function ( event ) {
 
 function addLighting(color){
   const geometry = new THREE.SphereGeometry(25, 32, 16);
-  const material = new THREE.MeshBasicMaterial({ color:color });
+  const textureLoader = new THREE.TextureLoader();
+  textureLoader.setCrossOrigin("");
+  const texture =  textureLoader.load("Textures/tiles.jpg");
+  const material = new THREE.MeshBasicMaterial({ map:texture,color: color});
   var lightCube = new THREE.Mesh(geometry, material);
   lightCube.position.y = 350;
 
