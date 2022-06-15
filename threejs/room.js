@@ -4,6 +4,7 @@ var renderer;
 
 const floorTex = "Textures/wood.jpg";
 const wallTex = "Textures/wall2.jpg";
+const chairTex = "Textures/chair2.jpg"
 var floor_width = 600;
 var floor_height = 400;
 var wall_height = 250;
@@ -20,6 +21,7 @@ var dragObject;
 var moveableObjects=[];
 var lightCube;
 var light;
+var objects = [];
 window.onload = (event) => {
   init();
   [light,lightCube]= addLighting(0xE1C16E);
@@ -34,6 +36,7 @@ function animate() {
   controls.update();
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
+  
 }
 
 function init() {
@@ -60,7 +63,7 @@ function init() {
 }
 function setDraggingActions(){
   var dragControls = new THREE.DragControls(moveableObjects, camera, renderer.domElement);
-  
+  dragControls.transformGroup = true;
   dragControls.addEventListener( 'dragstart', function ( event ) {
     controls.enabled = false;
 	  //event.object.material.emissive =  0xaaaaaa ;
@@ -69,7 +72,7 @@ function setDraggingActions(){
 
 dragControls.addEventListener( 'dragend', function ( event ) {
   controls.enabled = true;
-	 event.object.material.emissive=  0x000000;
+	event.object.material.emissive=  0x000000;
   light.position.set(lightCube.position.x,lightCube.position.y,lightCube.position.z);
 } );
   
@@ -85,7 +88,7 @@ function addLighting(color){
   lightCube.position.y = 350;
 
   scene.add( lightCube );
-  const light = new THREE.SpotLight( color,1.5,1000,90 * Math.PI /180);
+  const light = new THREE.PointLight( color,2);
   light.position.set( 0, 350, 0);
   scene.add( light );
   moveableObjects.push(lightCube);
@@ -118,7 +121,10 @@ function createScene() {
     wall_height,
     wallTex
   );
-  
+  var chair =  new Chair(55,55,7,[0,2.5 + 55,0],chairTex);
+  var chairObj= chair.create();
+  scene.add(chairObj);
+  moveableObjects.push(chairObj);
 }
 
 function createWallFloor(
