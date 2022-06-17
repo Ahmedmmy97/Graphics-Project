@@ -1,3 +1,8 @@
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.117.1/build/three.module.js';
+import {FBXLoader} from 'https://cdn.jsdelivr.net/npm/three@0.117.1/examples/jsm/loaders/FBXLoader.js'
+import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.117.1/examples/jsm/controls/OrbitControls.js'
+import {DragControls} from 'https://cdn.jsdelivr.net/npm/three@0.117.1/examples/jsm/controls/DragControls.js'
+import {Chair} from './Chair.js';
 var scene;
 var camera;
 var renderer;
@@ -8,6 +13,7 @@ const chairTex = "Textures/chair2.jpg"
 var floor_width = 600;
 var floor_height = 400;
 var wall_height = 250;
+var l = 10;
 var controls;
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
@@ -25,7 +31,30 @@ var objects = [];
 window.onload = (event) => {
   init();
   [light,lightCube]= addLighting(0xE1C16E);
-  
+  const fbxLoader = new FBXLoader()
+fbxLoader.load(
+    'Textures/table.fbx',
+    (object) => {
+        // object.traverse(function (child) {
+        //     if ((child as THREE.Mesh).isMesh) {
+       
+        //         if ((child as THREE.Mesh).material) {
+        //             ((child as THREE.Mesh).material as THREE.MeshBasicMaterial).transparent = false
+        //         }
+        //     }
+        // })
+        // object.scale.set(.01, .01, .01)
+        scene.add(object)
+        moveableObjects.push(object)
+    },
+    (xhr) => {
+        console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
+    },
+    (error) => {
+        console.log(error)
+    }
+)
+
   createScene();
   setDraggingActions();
   animate();
@@ -34,6 +63,11 @@ window.onload = (event) => {
 
 function animate() {
   controls.update();
+  /*lightCube.rotation.y += (2 * Math.PI) / 180;
+  l+=0.01;
+  lightCube.position.x += Math.cos(l) *5;
+  light.position.set(lightCube.position.x,lightCube.position.y,lightCube.position.z); 
+  light.rotation.set(lightCube.rotation.x,lightCube.rotation.y,lightCube.rotation.z); */
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
   
@@ -56,13 +90,13 @@ function init() {
   camera.position.z = 600;
   camera.position.x = 0;
   camera.lookAt(new THREE.Vector3(0, 0, 0));
-  controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls = new OrbitControls(camera, renderer.domElement);
 
   controls.enableZoom = true;
   
 }
 function setDraggingActions(){
-  var dragControls = new THREE.DragControls(moveableObjects, camera, renderer.domElement);
+  var dragControls = new DragControls(moveableObjects, camera, renderer.domElement);
   dragControls.transformGroup = true;
   dragControls.addEventListener( 'dragstart', function ( event ) {
     controls.enabled = false;
@@ -72,8 +106,8 @@ function setDraggingActions(){
 
 dragControls.addEventListener( 'dragend', function ( event ) {
   controls.enabled = true;
-	event.object.material.emissive=  0x000000;
-  light.position.set(lightCube.position.x,lightCube.position.y,lightCube.position.z);
+	//event.object.material.emissive=  0x000000;
+  
 } );
   
 }
@@ -86,12 +120,12 @@ function addLighting(color){
   const material = new THREE.MeshBasicMaterial({ map:texture,color: color});
   var lightCube = new THREE.Mesh(geometry, material);
   lightCube.position.y = 350;
-
+  
   scene.add( lightCube );
   const light = new THREE.PointLight( color,2);
   light.position.set( 0, 350, 0);
   scene.add( light );
-  moveableObjects.push(lightCube);
+  //moveableObjects.push(lightCube);
   return [light,lightCube];
 }
 
@@ -121,10 +155,10 @@ function createScene() {
     wall_height,
     wallTex
   );
-  var chair =  new Chair(55,55,7,[0,2.5 + 55,0],chairTex);
+  /*var chair =  new Chair(55,55,7,[0,2.5 + 55,0],chairTex);
   var chairObj= chair.create();
   scene.add(chairObj);
-  moveableObjects.push(chairObj);
+  moveableObjects.push(chairObj);*/
 }
 
 function createWallFloor(
