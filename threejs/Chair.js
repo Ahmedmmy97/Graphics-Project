@@ -29,9 +29,6 @@ export class Chair{
         this. upperRight = this.createUpperPart(this.height,this.width,this.height,false,this.coordinates,this.textureImg)
         this. top = this.createTopPart(this.length,this.width,this.height,this.coordinates,this.textureImg);
         var geometry = new THREE.BoxGeometry(this.width+20, this.width*2 +20, this.width +20);
-        var textureLoader = new THREE.TextureLoader();
-        textureLoader.setCrossOrigin("");
-        var texture =  textureLoader.load(this.textureImg);
         var material = new THREE.MeshStandardMaterial({
             
             opacity: 0.0,
