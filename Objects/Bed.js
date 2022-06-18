@@ -1,5 +1,5 @@
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.117.1/build/three.module.js";
-import {FBXLoader} from 'https://cdn.jsdelivr.net/npm/three@0.117.1/examples/jsm/loaders/FBXLoader.js'
+import * as THREE from '../common/three.js';
+import {FBXLoader} from '../common/FBXLoader.js'
 export class Bed {
   constructor(length, width, height, [x, y, z], textureImg) {
     this.length = length * 1.5;
@@ -97,7 +97,7 @@ export class Bed {
   createPillow(){
     const fbxLoader = new FBXLoader()
     fbxLoader.load(
-        'Textures/pillow.fbx',
+        '3DModels/pillow.fbx',
         (object) => {
           object.children[0].position.y = this.base.position.y+this.height +10
           object.children[0].rotation.y = 90 * Math.PI / 180;

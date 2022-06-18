@@ -1,9 +1,9 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.117.1/build/three.module.js';
-import {FBXLoader} from 'https://cdn.jsdelivr.net/npm/three@0.117.1/examples/jsm/loaders/FBXLoader.js'
-import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.117.1/examples/jsm/controls/OrbitControls.js'
-import {DragControls} from 'https://cdn.jsdelivr.net/npm/three@0.117.1/examples/jsm/controls/DragControls.js'
-import {Chair} from './Chair.js';
-import {Bed} from './Bed.js';
+import * as THREE from './common/three.js';
+import {FBXLoader} from './common/FBXLoader.js'
+import {OrbitControls} from './common/OrbitControls.js'
+import {DragControls} from './common/DragControls.js'
+import {Chair} from './Objects/Chair.js';
+import {Bed} from './Objects/Bed.js';
 var scene;
 var camera;
 var renderer;
@@ -300,7 +300,7 @@ function createBed(){
 function createTable(){
   const fbxLoader = new FBXLoader()
   fbxLoader.load(
-      'Textures/table.fbx',
+      '3DModels/table.fbx',
       (object) => {
           
            
