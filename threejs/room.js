@@ -3,6 +3,7 @@ import {FBXLoader} from 'https://cdn.jsdelivr.net/npm/three@0.117.1/examples/jsm
 import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.117.1/examples/jsm/controls/OrbitControls.js'
 import {DragControls} from 'https://cdn.jsdelivr.net/npm/three@0.117.1/examples/jsm/controls/DragControls.js'
 import {Chair} from './Chair.js';
+import {Bed} from './Bed.js';
 var scene;
 var camera;
 var renderer;
@@ -10,6 +11,7 @@ var renderer;
 const floorTex = "Textures/wood.jpg";
 const wallTex = "Textures/wall2.jpg";
 const chairTex = "Textures/chair2.jpg"
+const bedTex = "Textures/chair3.jpg"
 var floor_width = 1000;
 var floor_height = 1000;
 var wall_height = 400;
@@ -45,7 +47,7 @@ var selectionColor = {r:69,g:72,b:81}
 window.onload = (event) => {
   init();
   [light,lightCube]= addLighting(0xE1C16E);
- 
+  
   setUiAndEvents();
   createScene();
   setDraggingActions();
@@ -58,6 +60,15 @@ function setUiAndEvents(){
   button.onclick = function (event) {
     rotationMode = !rotationMode;
     setRotationMode(button);
+  };
+  document.getElementById("Chair").onclick = function (event) {
+    createChair();
+  };
+  document.getElementById("Bed").onclick = function (event) {
+    createBed();
+  };
+  document.getElementById("Table").onclick = function (event) {
+    createTable();
   };
 }
 function setRotationMode(button){
@@ -257,11 +268,22 @@ function createScene() {
     wall_height,
     wallTex
   );
+  /*
+  
+  createTable();
+  */
+}
+function createChair(){
   var chair =  new Chair(75,75,7,[0,2.5 + 75,0],chairTex);
   var chairObj= chair.create();
   scene.add(chairObj);
   moveableObjects.push(chairObj);
-  createTable();
+}
+function createBed(){
+  var bed = new Bed(100,150,7,[0,2.5,0],bedTex);
+  var bedObj= bed.create();
+  scene.add(bedObj);
+  moveableObjects.push(bedObj);
 }
 function createTable(){
   const fbxLoader = new FBXLoader()
@@ -285,7 +307,7 @@ function createTable(){
            group.children[1].position.y = group.children[1].position.y - 270/2
            group.children[0].position.y = group.children[0].position.y - 270/2
            group.position.y = 270/4
-           group.position.x = floor_width/2 - group.geometry.parameters.width/2;
+           group.position.x = 0;
           scene.add(group)
           moveableObjects.push(group)
       },
