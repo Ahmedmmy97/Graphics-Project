@@ -10,12 +10,13 @@ var renderer;
 const floorTex = "Textures/wood.jpg";
 const wallTex = "Textures/wall2.jpg";
 const chairTex = "Textures/chair2.jpg"
-var floor_width = 600;
-var floor_height = 400;
-var wall_height = 250;
+var floor_width = 1000;
+var floor_height = 1000;
+var wall_height = 400;
 var l = 10;
 var x =-1;
 var controls;
+var dragControls;
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
 var plane = new THREE.Plane();
@@ -24,22 +25,123 @@ var planeIntersect = new THREE.Vector3(); // point of intersection with the plan
 var pIntersect = new THREE.Vector3(); // point of intersection with an object (plane's point)
 var shift = new THREE.Vector3(); // distance between position of an object and points of intersection with the object
 var isDragging = false;
-var dragObject;
+var rotationMode =false;
+var selected;
 var moveableObjects=[];
 var lightCube;
 var light;
-var objects = [];
+
+var mouseX = 0;
+var mouseXOnMouseDown = 0;
+
+var mouseY = 0;
+var mouseYOnMouseDown = 0;
+
+var windowHalfX = window.innerWidth / 2;
+var windowHalfY = window.innerHeight / 2;
+
+var slowingFactor = 0.025;
+var selectionColor = {r:69,g:72,b:81}
 window.onload = (event) => {
   init();
   [light,lightCube]= addLighting(0xE1C16E);
  
-
+  setUiAndEvents();
   createScene();
   setDraggingActions();
   animate();
 
 };
+function setUiAndEvents(){
+  document.addEventListener( 'mousedown', onDocumentMouseDown );
+  var button = document.getElementById("Rotation");
+  button.onclick = function (event) {
+    rotationMode = !rotationMode;
+    setRotationMode(button);
+  };
+}
+function setRotationMode(button){
+  if(rotationMode){
+    dragControls.enabled = false;
+    button.style.background='#FA2C01';
+    button.style.boxShadow = 'inset 1px 1px 10px #333';
+    button.style.margin= '20px 10px';
+    button.style.padding= '25px';
+    button.style.borderRadius= '25px';
+  }else{
+    dragControls.enabled = true;
+    button.style.background='#FCFCFC';
+    button.style.boxShadow = '';
+    button.style.margin= '20px 10px';
+    button.style.padding= '25px';
+    button.style.borderRadius= '25px';
+  }
+}
+function onDocumentMouseDown( event ) {    
+  event.preventDefault();
+ 
+  document.addEventListener( 'mouseup', onDocumentMouseUp, false );
+  var mouse3D = new THREE.Vector3( ( event.clientX / window.innerWidth ) * 2 - 1,   
+                          -( event.clientY / window.innerHeight ) * 2 + 1,  
+                          event.clientZ );  
+      
+  var raycaster =  new THREE.Raycaster();                                        
+  raycaster.setFromCamera( mouse3D, camera );
+  var intersects = raycaster.intersectObjects( moveableObjects );
 
+  if ( intersects.length > 0 ) {
+    if(rotationMode){
+      document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+      mouseXOnMouseDown = event.clientX - windowHalfX;
+
+      mouseYOnMouseDown = event.clientY - windowHalfY;
+    }
+      controls.enabled = false;
+      
+      
+      selectObject(intersects[0].object)
+  }else{
+   clearSelected();
+  }
+}
+function onDocumentMouseMove( event ) {
+
+  mouseX = event.clientX - windowHalfX;
+
+  selected.rotation.y = ( mouseX - mouseXOnMouseDown ) *slowingFactor ;
+
+  /*mouseY = event.clientY - windowHalfY;
+
+  selected.rotation.y = ( mouseY - mouseYOnMouseDown ) *slowingFactor ;*/
+}
+
+function onDocumentMouseUp( event ) {    
+  event.preventDefault();
+    if(rotationMode)
+      dragControls.enabled=false;
+    else
+      dragControls.enabled =true;
+      controls.enabled = true;
+  
+  document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
+  document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
+}
+function selectObject(object){
+  clearSelected();
+  object.children.forEach(element => {
+    element.material.emissive = selectionColor;
+  });
+  
+  selected = object;
+  
+}
+function clearSelected(){
+  if(selected!=null){  selected.children.forEach(element => {
+    element.material.emissive = {r:0,g:0,b:0}
+  });
+  }
+  selected=null;
+}
 function animate() {
   controls.update();
   animateLight();
@@ -83,7 +185,7 @@ function init() {
   
 }
 function setDraggingActions(){
-  var dragControls = new DragControls(moveableObjects, camera, renderer.domElement);
+  dragControls = new DragControls(moveableObjects, camera, renderer.domElement);
   
   dragControls.addEventListener( 'dragstart', function ( event ) {
     controls.enabled = false;
@@ -113,17 +215,17 @@ function controlOutOfBounds(event){
   event.object.position.x = floor_width/2 -event.object.geometry.parameters.width/2 *event.object.scale.x;
 }
 function addLighting(color){
-  const geometry = new THREE.SphereGeometry(25, 32, 16);
+  const geometry = new THREE.SphereGeometry(50, 32, 16);
   const textureLoader = new THREE.TextureLoader();
   textureLoader.setCrossOrigin("");
   const texture =  textureLoader.load("Textures/tiles.jpg");
   const material = new THREE.MeshBasicMaterial({ map:texture,color: color});
   var lightCube = new THREE.Mesh(geometry, material);
-  lightCube.position.y = 350;
+  lightCube.position.y = wall_height;
   
   scene.add( lightCube );
   const light = new THREE.PointLight( color,2);
-  light.position.set( 0, 350, 0);
+  light.position.set( 0, wall_height, 0);
   scene.add( light );
   moveableObjects.push(lightCube);
   return [light,lightCube];
@@ -155,7 +257,7 @@ function createScene() {
     wall_height,
     wallTex
   );
-  var chair =  new Chair(55,55,7,[0,2.5 + 55,0],chairTex);
+  var chair =  new Chair(75,75,7,[0,2.5 + 75,0],chairTex);
   var chairObj= chair.create();
   scene.add(chairObj);
   moveableObjects.push(chairObj);
