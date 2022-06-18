@@ -30,6 +30,7 @@ var isDragging = false;
 var rotationMode =false;
 var selected;
 var moveableObjects=[];
+var Objects=[];
 var lightCube;
 var light;
 
@@ -70,6 +71,12 @@ function setUiAndEvents(){
   document.getElementById("Table").onclick = function (event) {
     createTable();
   };
+  document.getElementById("Delete").onclick = function (event) {
+    if(selected!=null){
+      
+      scene.remove(selected);
+    }
+  };
 }
 function setRotationMode(button){
   if(rotationMode){
@@ -89,7 +96,7 @@ function setRotationMode(button){
   }
 }
 function onDocumentMouseDown( event ) {    
-  event.preventDefault();
+  //event.preventDefault();
  
   document.addEventListener( 'mouseup', onDocumentMouseUp, false );
   var mouse3D = new THREE.Vector3( ( event.clientX / window.innerWidth ) * 2 - 1,   
@@ -98,9 +105,10 @@ function onDocumentMouseDown( event ) {
       
   var raycaster =  new THREE.Raycaster();                                        
   raycaster.setFromCamera( mouse3D, camera );
-  var intersects = raycaster.intersectObjects( moveableObjects );
+  var intersects = raycaster.intersectObjects( Objects );
 
-  if ( intersects.length > 0 ) {
+  if ( intersects.length > 0) {
+    if( moveableObjects.includes(intersects[0].object)){
     if(rotationMode){
       document.addEventListener( 'mousemove', onDocumentMouseMove, false );
       mouseXOnMouseDown = event.clientX - windowHalfX;
@@ -112,7 +120,8 @@ function onDocumentMouseDown( event ) {
       
       selectObject(intersects[0].object)
   }else{
-   clearSelected();
+    clearSelected();
+  }
   }
 }
 function onDocumentMouseMove( event ) {
@@ -268,6 +277,7 @@ function createScene() {
     wall_height,
     wallTex
   );
+  Objects.push(wall,floor,wall2);
   /*
   
   createTable();
@@ -278,12 +288,14 @@ function createChair(){
   var chairObj= chair.create();
   scene.add(chairObj);
   moveableObjects.push(chairObj);
+  Objects.push(chairObj);
 }
 function createBed(){
   var bed = new Bed(100,150,7,[0,2.5,0],bedTex);
   var bedObj= bed.create();
   scene.add(bedObj);
   moveableObjects.push(bedObj);
+  Objects.push(bedObj);
 }
 function createTable(){
   const fbxLoader = new FBXLoader()
@@ -310,6 +322,7 @@ function createTable(){
            group.position.x = 0;
           scene.add(group)
           moveableObjects.push(group)
+          Objects.push(group)
       },
       (xhr) => {
           console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
