@@ -26,7 +26,7 @@ var pNormal = new THREE.Vector3(1, 0,1); // plane's normal
 var planeIntersect = new THREE.Vector3(); // point of intersection with the plane
 var pIntersect = new THREE.Vector3(); // point of intersection with an object (plane's point)
 var shift = new THREE.Vector3(); // distance between position of an object and points of intersection with the object
-var isDragging = false;
+var scaleSlider ;
 var rotationMode =false;
 var selected;
 var moveableObjects=[];
@@ -47,11 +47,13 @@ var slowingFactor = 0.025;
 var selectionColor = {r:69,g:72,b:81}
 window.onload = (event) => {
   init();
+  
   [light,lightCube]= addLighting(0xE1C16E);
   
   setUiAndEvents();
   createScene();
   setDraggingActions();
+  clearSelected();
   animate();
 
 };
@@ -82,8 +84,8 @@ function setUiAndEvents(){
       Objects = Objects.filter((element)=>{
         return element!=selected;
     })
-      console.log(moveableObjects)
-      selected = null;
+    
+      clearSelected();
     }
     setDraggingActions();
   };
@@ -130,6 +132,15 @@ function setUiAndEvents(){
       });
        clearSelected();
     }
+  };
+  scaleSlider = document.getElementById("scale");
+  scaleSlider.onclick = function (event) {
+    var value = event.target.value/5;
+    if(selected!=null){
+      selected.scale.set(value,value,value);
+      controlOutOfBounds(selected)
+    }
+    
   };
 }
 function setRotationMode(button){
@@ -207,7 +218,8 @@ function selectObject(object){
   });
   
   selected = object;
-  
+  scaleSlider.disabled =false;
+  scaleSlider.value= object.scale.x * 5;
 }
 function clearSelected(){
   if(selected!=null){  selected.children.forEach(element => {
@@ -215,6 +227,8 @@ function clearSelected(){
   });
   }
   selected=null;
+  scaleSlider.disabled = true;
+  scaleSlider.value = 5;
 }
 function animate() {
   controls.update();
@@ -270,23 +284,23 @@ function setDraggingActions(){
 dragControls.addEventListener( 'dragend', function ( event ) {
   controls.enabled = true;
 	//event.object.material.emissive=  0x000000;
-  controlOutOfBounds(event);
+  controlOutOfBounds(event.object);
 } );
   
 }
-function controlOutOfBounds(event){
-  if(event.object.position.y<event.object.geometry.parameters.height/2 *event.object.scale.y -2.5)
-   event.object.position.y = event.object.geometry.parameters.height/2 *event.object.scale.y -2.5;
-   if(event.object.position.y>wall_height -event.object.geometry.parameters.height/2 *event.object.scale.y)
-   event.object.position.y =wall_height -event.object.geometry.parameters.height/2 *event.object.scale.y;
-  if(event.object.position.z<event.object.geometry.parameters.depth/2 *event.object.scale.z - floor_height/2)
-  event.object.position.z = event.object.geometry.parameters.depth/2 *event.object.scale.z - floor_height/2;
-  if(event.object.position.z>floor_height/2 -event.object.geometry.parameters.depth/2 *event.object.scale.z )
-  event.object.position.z = floor_height/2 -event.object.geometry.parameters.depth/2 *event.object.scale.z;
-  if(event.object.position.x<event.object.geometry.parameters.width/2 *event.object.scale.x - floor_width/2)
-  event.object.position.x = event.object.geometry.parameters.depth/2 *event.object.scale.x - floor_width/2;
-  if(event.object.position.x>floor_width/2 -event.object.geometry.parameters.width/2 *event.object.scale.x )
-  event.object.position.x = floor_width/2 -event.object.geometry.parameters.width/2 *event.object.scale.x;
+function controlOutOfBounds(object){
+  if(object.position.y< object.geometry.parameters.height/2 * object.scale.y -2.5)
+    object.position.y =  object.geometry.parameters.height/2 * object.scale.y -2.5;
+   if( object.position.y>wall_height - object.geometry.parameters.height/2 * object.scale.y)
+    object.position.y =wall_height - object.geometry.parameters.height/2 * object.scale.y;
+  if( object.position.z< object.geometry.parameters.depth/2 * object.scale.z - floor_height/2)
+   object.position.z =  object.geometry.parameters.depth/2 * object.scale.z - floor_height/2;
+  if( object.position.z>floor_height/2 - object.geometry.parameters.depth/2 * object.scale.z )
+   object.position.z = floor_height/2 - object.geometry.parameters.depth/2 * object.scale.z;
+  if( object.position.x< object.geometry.parameters.width/2 * object.scale.x - floor_width/2)
+   object.position.x =  object.geometry.parameters.depth/2 * object.scale.x - floor_width/2;
+  if( object.position.x>floor_width/2 - object.geometry.parameters.width/2 * object.scale.x )
+   object.position.x = floor_width/2 - object.geometry.parameters.width/2 * object.scale.x;
 }
 function addLighting(color){
   const geometry = new THREE.SphereGeometry(50, 32, 16);
