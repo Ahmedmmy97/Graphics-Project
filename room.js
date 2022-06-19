@@ -181,7 +181,7 @@ function onDocumentMouseDown( event ) {
       mouseYOnMouseDown = event.clientY - windowHalfY;
     }
       
-      
+      controls.enabled =false;
       
       selectObject(intersects[0].object)
   }else{
