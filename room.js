@@ -159,12 +159,17 @@ function onDocumentMouseDown(event) {
   //controls.enabled = false;
   document.addEventListener("mouseup", onDocumentMouseUp, false);
   document.addEventListener("touchend", onDocumentMouseUp,false);
+  var coord;
+  if(event.type == "touchstart"){
+    coord = event.changedTouches[0];
+  }else{
+    coord = event;
+  }
   var mouse3D = new THREE.Vector3(
-    (event.clientX / window.innerWidth) * 2 - 1,
-    -(event.clientY / window.innerHeight) * 2 + 1,
-    event.clientZ
+    (coord.clientX / window.innerWidth) * 2 - 1,
+    -(coord.clientY / window.innerHeight) * 2 + 1,
+    coord.clientZ
   );
-
   raycaster.setFromCamera(mouse3D, camera);
   var intersects = raycaster.intersectObjects(Objects);
 
@@ -173,12 +178,13 @@ function onDocumentMouseDown(event) {
       if (rotationMode) {
         document.addEventListener("mousemove", onDocumentMouseMove, false);
         document.addEventListener("touchmove", onDocumentMouseMove, false);
-        mouseXOnMouseDown = event.clientX - windowHalfX;
+        mouseXOnMouseDown = coord.clientX - windowHalfX;
 
-        mouseYOnMouseDown = event.clientY - windowHalfY;
+        mouseYOnMouseDown = coord.clientY - windowHalfY;
+        controls.enabled = false;
       }
 
-      controls.enabled = false;
+      
 
       selectObject(intersects[0].object);
     } else {
@@ -187,7 +193,13 @@ function onDocumentMouseDown(event) {
   }
 }
 function onDocumentMouseMove(event) {
-  mouseX = event.clientX - windowHalfX;
+  var coord;
+  if(event.type == "touchmove"){
+    coord = event.changedTouches[0];
+  }else{
+    coord = event;
+  }
+  mouseX = coord.clientX - windowHalfX;
 
   selected.rotation.y = (mouseX - mouseXOnMouseDown) * slowingFactor;
 
@@ -197,7 +209,7 @@ function onDocumentMouseMove(event) {
 }
 
 function onDocumentMouseUp(event) {
-  event.preventDefault();
+  //event.preventDefault();
   if (rotationMode) dragControls.enabled = false;
   else dragControls.enabled = true;
   controls.enabled = true;
