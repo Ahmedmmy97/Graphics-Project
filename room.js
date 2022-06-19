@@ -158,6 +158,7 @@ function onDocumentMouseDown(event) {
   //event.preventDefault();
   //controls.enabled = false;
   document.addEventListener("mouseup", onDocumentMouseUp, false);
+  document.addEventListener("touchend", onDocumentMouseUp,false);
   var mouse3D = new THREE.Vector3(
     (event.clientX / window.innerWidth) * 2 - 1,
     -(event.clientY / window.innerHeight) * 2 + 1,
@@ -171,6 +172,7 @@ function onDocumentMouseDown(event) {
     if (moveableObjects.includes(intersects[0].object)) {
       if (rotationMode) {
         document.addEventListener("mousemove", onDocumentMouseMove, false);
+        document.addEventListener("touchmove", onDocumentMouseMove, false);
         mouseXOnMouseDown = event.clientX - windowHalfX;
 
         mouseYOnMouseDown = event.clientY - windowHalfY;
@@ -202,6 +204,8 @@ function onDocumentMouseUp(event) {
 
   document.removeEventListener("mousemove", onDocumentMouseMove, false);
   document.removeEventListener("mouseup", onDocumentMouseUp, false);
+  document.removeEventListener("touchmove", onDocumentMouseMove, false);
+  document.removeEventListener("touchend", onDocumentMouseUp, false);
 }
 function selectObject(object) {
   clearSelected();
