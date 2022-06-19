@@ -142,7 +142,7 @@ export class Bed {
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
     texture.offset.set(0, 0);
     texture.repeat.set(2,2);
-    const material = new THREE.MeshLambertMaterial({ map: texture });
+    const material = new THREE.MeshStandardMaterial({ map: texture });
     var mattress = new THREE.Mesh(geometry, [material, material]);
     mattress.position.z = 0;
     mattress.position.y = this.base.position.y+this.height / 2 + height / 2;

@@ -19,7 +19,7 @@ var l = 10;
 var x =-1;
 var controls;
 var dragControls;
-var raycaster = new THREE.Raycaster();
+var raycaster =  new THREE.Raycaster();
 var mouse = new THREE.Vector2();
 var plane = new THREE.Plane();
 var pNormal = new THREE.Vector3(1, 0,1); // plane's normal
@@ -75,6 +75,60 @@ function setUiAndEvents(){
     if(selected!=null){
       
       scene.remove(selected);
+      
+      moveableObjects = moveableObjects.filter((element)=>{
+          return element!=selected;
+      })
+      Objects = Objects.filter((element)=>{
+        return element!=selected;
+    })
+      console.log(moveableObjects)
+      selected = null;
+    }
+    setDraggingActions();
+  };
+  document.getElementById("Red").onclick = function (event) {
+    console.log(selected);
+    if(selected!=null){
+      selected.children.forEach(element => {
+        element.material.color = {r:30,g:0,b:0}; 
+        clearSelected();
+      });
+       
+    }
+  };
+  document.getElementById("Green").onclick = function (event) {
+    console.log(selected);
+    if(selected!=null){
+      selected.children.forEach(element => {
+        element.material.color = {r:0,g:30,b:0}; 
+        clearSelected();
+      });
+       
+    }
+  };
+  document.getElementById("Blue").onclick = function (event) {
+    console.log(selected);
+    if(selected!=null){
+      selected.children.forEach(element => {
+        element.material.color =  {r:0,g:0,b:30};
+        clearSelected();
+      });
+       
+    }
+  };
+  document.getElementById("Default").onclick = function (event) {
+    console.log(selected);
+    if(selected!=null){
+      selected.children.forEach(element => {
+        try{
+          element.material = [new THREE.MeshStandardMaterial({ map: element.material[0].map }),new THREE.MeshStandardMaterial({ map: element.material[1].map })];
+        }catch{
+          element.material = new THREE.MeshStandardMaterial({ map: element.material.map });
+        }
+       // element.material = new THREE.MeshStandardMaterial({ map: element.material.map });
+      });
+       clearSelected();
     }
   };
 }
@@ -97,13 +151,13 @@ function setRotationMode(button){
 }
 function onDocumentMouseDown( event ) {    
   //event.preventDefault();
- 
+  //controls.enabled = false;
   document.addEventListener( 'mouseup', onDocumentMouseUp, false );
   var mouse3D = new THREE.Vector3( ( event.clientX / window.innerWidth ) * 2 - 1,   
                           -( event.clientY / window.innerHeight ) * 2 + 1,  
                           event.clientZ );  
       
-  var raycaster =  new THREE.Raycaster();                                        
+                                          
   raycaster.setFromCamera( mouse3D, camera );
   var intersects = raycaster.intersectObjects( Objects );
 
@@ -115,7 +169,7 @@ function onDocumentMouseDown( event ) {
 
       mouseYOnMouseDown = event.clientY - windowHalfY;
     }
-      controls.enabled = false;
+      
       
       
       selectObject(intersects[0].object)
@@ -195,8 +249,8 @@ function init() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   $("body").append(renderer.domElement);
 
-  camera.position.y = 400;
-  camera.position.z = 600;
+  camera.position.y = 900;
+  camera.position.z = 1000;
   camera.position.x = 0;
   camera.lookAt(new THREE.Vector3(0, 0, 0));
   controls = new OrbitControls(camera, renderer.domElement);
