@@ -129,7 +129,7 @@ function setUiAndEvents() {
     }
   };
   scaleSlider = document.getElementById("scale");
-  scaleSlider.onclick = function (event) {
+  scaleSlider.oninput = function (event) {
     var value = event.target.value / 5;
     if (selected != null) {
       selected.scale.set(value, value, value);
