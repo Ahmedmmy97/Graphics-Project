@@ -74,6 +74,10 @@ function setUiAndEvents() {
     console.log("Creating Tree");
     createTree();
   };
+  document.getElementById("Drawer").onclick = function () {
+    console.log("Creating Drawer");
+    createDrawer();
+  };
   document.getElementById("Delete").onclick = function () {
     if (selected != null) {
       scene.remove(selected);
@@ -472,6 +476,60 @@ function createSofa(){
       });
        
       group.position.y = 125 / 2;
+      group.position.x = 0;
+      scene.add(group);
+      moveableObjects.push(group);
+      Objects.push(group);
+    },
+    (xhr) => {
+      console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+}
+
+function createDrawer(){
+  const fbxLoader = new FBXLoader();
+  fbxLoader.load(
+    "3DModels/drawer.fbx",
+    (object) => {
+      console.log(object);
+      var geometry = new THREE.BoxGeometry(250, 400, 300);
+
+      var material = new THREE.MeshStandardMaterial({
+        opacity: 0.0,
+        transparent: true,
+      });
+      
+      
+      var group = new THREE.Mesh(geometry, material);
+      
+      
+
+      group.add(object.children[0]);
+      group.add(object.children[0]);
+      group.add(object.children[0]);
+      group.add(object.children[0]);
+      group.add(object.children[0]);
+      group.add(object.children[0]);
+      group.add(object.children[0]);
+      group.add(object.children[0]);
+      group.add(object.children[0].children[0]);
+      group.add(object.children[0].children[0]);
+      group.add(object.children[1]);
+      group.add(object.children[1]);
+      console.log(group)
+      group.scale.set(0.5, 0.5, 0.5);
+      
+      group.children.forEach(element => {
+        element.position.y = element.position.y - 400/2 ;
+        element.position.z = element.position.z + 300/3 ;
+
+      });
+
+      group.position.y = 400 / 4;
       group.position.x = 0;
       scene.add(group);
       moveableObjects.push(group);
