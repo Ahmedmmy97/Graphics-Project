@@ -462,7 +462,7 @@ function createSofa(){
   fbxLoader.load(
     "3DModels/koltuk2.fbx",
     (object) => {
-      var geometry = new THREE.BoxGeometry(250, 125, 100);
+      var geometry = new THREE.BoxGeometry(250, 75, 100);
 
       var material = new THREE.MeshStandardMaterial({
         opacity: 0.0,
@@ -490,12 +490,13 @@ function createSofa(){
     
       
       group.children.forEach(element => {
-        element.position.y = element.position.y - 125/3 ;
+        element.position.y = element.position.y - 75/3 ;
       });
        
-      group.position.y = 125 / 2;
+      group.position.y = 150 / 2;
       group.position.x = 0;
       scene.add(group);
+      group.scale.set(2,2,2)
       moveableObjects.push(group);
       Objects.push(group);
     },
