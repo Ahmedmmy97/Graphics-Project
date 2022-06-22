@@ -120,6 +120,24 @@ function setUiAndEvents() {
       });
     }
   };
+  document.getElementById("Yellow").onclick = function () {
+    console.log(selected);
+    if (selected != null) {
+      selected.children.forEach((element) => {
+        element.material.color = { r: 30, g: 30, b: 0 };
+        clearSelected();
+      });
+    }
+  };
+  document.getElementById("Turquoise").onclick = function () {
+    console.log(selected);
+    if (selected != null) {
+      selected.children.forEach((element) => {
+        element.material.color = { r: 0, g: 25, b: 25 };
+        clearSelected();
+      });
+    }
+  };
   document.getElementById("Default").onclick = function () {
     console.log(selected);
     if (selected != null) {
@@ -547,9 +565,9 @@ function createDrawer(){
 function createTree(){
   const fbxLoader = new FBXLoader();
   fbxLoader.load(
-    "3DModels/tree.fbx",
+    "3DModels/plant2.fbx",
     (object) => {
-      var geometry = new THREE.BoxGeometry(250, 125, 100);
+      var geometry = new THREE.BoxGeometry(700, 700, 600);
 
       var material = new THREE.MeshStandardMaterial({
         opacity: 0.0,
@@ -561,14 +579,14 @@ function createTree(){
       
       console.log(object);
 
-      group.add(object.children[0]);
-      group.scale.set(0.5, 0.5, 0.5);
+      group.add(object.children[2]);
+      group.scale.set(0.3, 0.3, 0.3);
       
       group.children.forEach(element => {
-        element.position.y = element.position.y - 125/3 ;
+        element.position.y = element.position.y - 700/2 ;
       });
        
-      group.position.y = 125 / 2;
+      group.position.y = 700/6;
       group.position.x = 0;
       scene.add(group);
       moveableObjects.push(group);
