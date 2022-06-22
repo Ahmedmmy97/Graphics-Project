@@ -67,6 +67,13 @@ function setUiAndEvents() {
   document.getElementById("Table").onclick = function () {
     createTable();
   };
+  document.getElementById("Sofa").onclick = function () {
+    createSofa();
+  };
+  document.getElementById("Tree").onclick = function () {
+    console.log("Creating Tree");
+    createTree();
+  };
   document.getElementById("Delete").onclick = function () {
     if (selected != null) {
       scene.remove(selected);
@@ -301,17 +308,11 @@ function setDraggingActions() {
 }
 function controlOutOfBounds(object) {
   if (
-    object.position.y <
+    object.position.y !=
     (object.geometry.parameters.height / 2) * object.scale.y - 2.5
   )
     object.position.y =
       (object.geometry.parameters.height / 2) * object.scale.y - 2.5;
-  if (
-    object.position.y >
-    wall_height - (object.geometry.parameters.height / 2) * object.scale.y
-  )
-    object.position.y =
-      wall_height - (object.geometry.parameters.height / 2) * object.scale.y;
   if (
     object.position.z <
     (object.geometry.parameters.depth / 2) * object.scale.z - floor_height / 2
@@ -434,6 +435,96 @@ function createTable() {
     }
   );
 }
+function createSofa(){
+  const fbxLoader = new FBXLoader();
+  fbxLoader.load(
+    "3DModels/koltuk2.fbx",
+    (object) => {
+      var geometry = new THREE.BoxGeometry(250, 125, 100);
+
+      var material = new THREE.MeshStandardMaterial({
+        opacity: 0.0,
+        transparent: true,
+      });
+      
+      var group = new THREE.Mesh(geometry, material);
+
+      group.add(object.children[0]);
+      group.add(object.children[0]);
+      group.add(object.children[0]);
+      group.add(object.children[0]);
+      group.add(object.children[0]);
+      group.add(object.children[0]);
+      group.add(object.children[1]);
+      group.add(object.children[1]);
+      group.add(object.children[1]);
+      group.add(object.children[1]);
+      group.add(object.children[1]);
+      group.add(object.children[2]);
+      
+
+
+
+    
+      
+      group.children.forEach(element => {
+        element.position.y = element.position.y - 125/3 ;
+      });
+       
+      group.position.y = 125 / 2;
+      group.position.x = 0;
+      scene.add(group);
+      moveableObjects.push(group);
+      Objects.push(group);
+    },
+    (xhr) => {
+      console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+}
+
+function createTree(){
+  const fbxLoader = new FBXLoader();
+  fbxLoader.load(
+    "3DModels/tree.fbx",
+    (object) => {
+      var geometry = new THREE.BoxGeometry(250, 125, 100);
+
+      var material = new THREE.MeshStandardMaterial({
+        opacity: 0.0,
+        transparent: true,
+      });
+      
+      
+      var group = new THREE.Mesh(geometry, material);
+      
+      console.log(object);
+
+      group.add(object.children[0]);
+      group.scale.set(0.5, 0.5, 0.5);
+      
+      group.children.forEach(element => {
+        element.position.y = element.position.y - 125/3 ;
+      });
+       
+      group.position.y = 125 / 2;
+      group.position.x = 0;
+      scene.add(group);
+      moveableObjects.push(group);
+      Objects.push(group);
+    },
+    (xhr) => {
+      console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+}
+
 function createWallFloor(
   scene,
   [x, y, z],
