@@ -329,12 +329,15 @@ function setDraggingActions() {
   });
 }
 function controlOutOfBounds(object) {
-  if (
+  if ( 
     object.position.y !=
     (object.geometry.parameters.height / 2) * object.scale.y - 2.5
   )
     object.position.y =
       (object.geometry.parameters.height / 2) * object.scale.y - 2.5;
+
+
+
   if (
     object.position.z <
     (object.geometry.parameters.depth / 2) * object.scale.z - floor_height / 2
@@ -375,7 +378,7 @@ function addLighting(color) {
   const light = new THREE.PointLight(color, 2);
   light.position.set(0, wall_height, 0);
   scene.add(light);
-  moveableObjects.push(lightCube);
+  // moveableObjects.push(lightCube);
   return [light, lightCube];
 }
 
