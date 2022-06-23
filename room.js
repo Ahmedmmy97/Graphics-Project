@@ -329,6 +329,8 @@ function setDraggingActions() {
   });
 }
 function controlOutOfBounds(object) {
+  if(object==lightCube)
+    return
   if (
     object.position.y !=
     (object.geometry.parameters.height / 2) * object.scale.y - 2.5
